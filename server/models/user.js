@@ -49,9 +49,9 @@ userSchema
 // methods
 userSchema.methods = {
   authenticate: function (plainText) {
-    return this.ecryptPassword(plainText) === this.hashed_password;
+    return this.encryptPassword(plainText) === this.hashed_password;
   },
-  ecryptPassword: function (password) {
+  encryptPassword: function (password) {
     if (!password) return "";
     try {
       return crypto
@@ -67,4 +67,4 @@ userSchema.methods = {
   },
 };
 
-module.exports = moogoose.model("User", userSchema);
+module.exports = mongoose.model("User", userSchema);
