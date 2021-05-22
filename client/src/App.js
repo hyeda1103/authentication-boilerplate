@@ -1,11 +1,24 @@
 import React from "react";
-import Layout from "./core/Layout";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import SignUp from "./auth/SignUp";
+import SignIn from "./auth/SignIn";
+import Activate from "./auth/Activate";
+import GlobalStyle from "./globalStyles";
+import Header from "./components/Header";
+import Home from "./components/Home";
 
 function App() {
   return (
-    <Layout>
-      <h1>Hello World</h1>
-    </Layout>
+    <BrowserRouter>
+      <GlobalStyle />
+      <Header />
+      <Switch>
+        <Route path="/" exact component={Home} />
+        <Route path="/signup" component={SignUp} />
+        <Route path="/signin" component={SignIn} />
+        <Route path="/auth/activate/:token" component={Activate} />
+      </Switch>
+    </BrowserRouter>
   );
 }
 

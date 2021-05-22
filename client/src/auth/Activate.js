@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Layout from "./../core/Layout";
 import jwt from "jsonwebtoken";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
@@ -52,10 +51,10 @@ const Activate = ({ match }) => {
     </>
   );
   return (
-    <Layout>
+    <>
       <ToastContainer />
       {activationLink()}
-    </Layout>
+    </>
   );
 };
 
