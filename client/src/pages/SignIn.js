@@ -3,58 +3,48 @@ import { Redirect } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
-import { isAuth } from "./helper";
+import { authenticate, isAuth } from "../auth/helper";
 import styled from "styled-components";
 
-const SignUp = () => {
+const SignIn = () => {
   const [values, setValues] = useState({
-    name: "",
     email: "",
     password: "",
   });
 
-  const { name, email, password } = values;
+  const { email, password } = values;
 
-  const signupForm = () => {
+  const signinForm = () => {
     const handleChange = (name) => (e) => {
       setValues({ ...values, [name]: e.target.value });
     };
     const handleSubmit = (e) => {
       e.preventDefault();
-      setValues({ ...values, buttonText: "Submitting..." });
       axios({
         method: "POST",
-        url: `${process.env.REACT_APP_API}/signup`,
-        data: { name, email, password },
+        url: `${process.env.REACT_APP_API}/signin`,
+        data: { email, password },
       })
         .then((response) => {
-          console.log("SIGNUP SUCCESS", response);
-          setValues({
-            ...values,
-            name: "",
-            email: "",
-            password: "",
+          console.log("SIGNIN SUCCESS", response);
+          authenticate(response, () => {
+            setValues({
+              ...values,
+              name: "",
+              email: "",
+              password: "",
+            });
+            toast.success(`Hey ${response.data.user.name}, Welcome Back`);
           });
-          toast.success(response.data.message);
         })
         .catch((error) => {
-          console.log("SIGNUP ERROR", error.response.data);
-
+          console.log("SIGNIN ERROR", error.response.data);
           toast.error(error.response.data.error);
         });
     };
     return (
       <AuthBlock>
-        <Title>회원가입</Title>
-        <FormEl>
-          <StyledLabel htmlFor="name">이름</StyledLabel>
-          <StyledInput
-            id="name"
-            type="text"
-            value={name}
-            onChange={handleChange("name")}
-          />
-        </FormEl>
+        <Title>로그인</Title>
         <FormEl>
           <StyledLabel htmlFor="email">이메일</StyledLabel>
           <StyledInput
@@ -74,7 +64,7 @@ const SignUp = () => {
           />
         </FormEl>
         <FormEl>
-          <Button onClick={handleSubmit}>회원가입</Button>
+          <Button onClick={handleSubmit}>로그인</Button>
         </FormEl>
       </AuthBlock>
     );
@@ -83,12 +73,12 @@ const SignUp = () => {
     <Main>
       <ToastContainer />
       {isAuth() ? <Redirect to="/" /> : null}
-      {signupForm()}
+      {signinForm()}
     </Main>
   );
 };
 
-export default SignUp;
+export default SignIn;
 
 const Main = styled.main`
   height: 100%;
