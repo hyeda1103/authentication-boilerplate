@@ -30,10 +30,18 @@ const Navbar = ({ history }) => {
               </NavItem>
             </>
           )}
-          {isAuth() && (
+          {isAuth() && isAuth().role === "admin" && (
             <NavItem
-              to="/profile"
-              style={{ color: pathname === "/profile" && "yellow" }}
+              to="/admin"
+              style={{ color: pathname === "/admin" && "yellow" }}
+            >
+              {isAuth().name}
+            </NavItem>
+          )}
+          {isAuth() && isAuth().role === "subscriber" && (
+            <NavItem
+              to="/private"
+              style={{ color: pathname === "/private" && "yellow" }}
             >
               {isAuth().name}
             </NavItem>
