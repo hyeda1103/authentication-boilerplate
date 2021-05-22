@@ -6,6 +6,8 @@ import Activate from "./auth/Activate";
 import GlobalStyle from "./globalStyles";
 import Header from "./components/Header";
 import Home from "./components/Home";
+import Private from "./components/Private";
+import PrivateRoute from "./auth/PrivateRoute";
 
 function App() {
   return (
@@ -17,6 +19,7 @@ function App() {
         <Route path="/signup" component={SignUp} />
         <Route path="/signin" component={SignIn} />
         <Route path="/auth/activate/:token" component={Activate} />
+        <PrivateRoute path="/private" component={Private} />
       </Switch>
     </BrowserRouter>
   );
