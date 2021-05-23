@@ -30,7 +30,7 @@ router.put(
   forgotPassword
 );
 router.put(
-  "/forgot-password",
+  "/reset-password",
   resetPasswordValidator,
   runValidation,
   resetPassword

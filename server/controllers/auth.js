@@ -2,6 +2,7 @@ const { sendEmailWithNodemailer } = require("../helpers/email");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const expressJwt = require("express-jwt");
+const _ = require("lodash");
 
 exports.signup = (req, res) => {
   const { name, email, password } = req.body;
@@ -152,8 +153,59 @@ exports.forgotPassword = (req, res) => {
             `,
     };
 
-    sendEmailWithNodemailer(req, res, emailData);
+    return user.updateOne({ resetPasswordLink: token }, (err, success) => {
+      if (err) {
+        console.log("RESET PASSWORD LINK ERROR", err);
+        return res.status(400).json({
+          error: "Database connection error on user password forgot request",
+        });
+      } else {
+        sendEmailWithNodemailer(req, res, emailData);
+      }
+    });
   });
 };
 
-exports.resetPassword = (req, res) => {};
+exports.resetPassword = (req, res) => {
+  const { resetPasswordLink, newPassword } = req.body;
+
+  if (resetPasswordLink) {
+    jwt.verify(
+      resetPasswordLink,
+      process.env.JWT_RESET_PASSWORD,
+      function (err, decoded) {
+        if (err) {
+          return res.status(400).json({
+            error: "Expired link. Try again",
+          });
+        }
+
+        User.findOne({ resetPasswordLink }, (err, user) => {
+          if (err || !user) {
+            return res.status(400).json({
+              error: "Something went wrong. Try later",
+            });
+          }
+
+          const updatedFields = {
+            password: newPassword,
+            resetPasswordLink: "",
+          };
+
+          user = _.extend(user, updatedFields);
+
+          user.save((err, result) => {
+            if (err) {
+              return res.status(400).json({
+                error: "Error resetting user password",
+              });
+            }
+            res.json({
+              message: "Great! Now you can login with your new password!",
+            });
+          });
+        });
+      }
+    );
+  }
+};
