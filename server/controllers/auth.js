@@ -1,6 +1,7 @@
 const { sendEmailWithNodemailer } = require("../helpers/email");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+const expressJwt = require("express-jwt");
 
 exports.signup = (req, res) => {
   const { name, email, password } = req.body;
@@ -101,3 +102,8 @@ exports.signin = (req, res) => {
     });
   });
 };
+
+exports.requireSignin = expressJwt({
+  secret: process.env.JWT_SECRET, // req.user
+  algorithms: ["HS256"],
+});
