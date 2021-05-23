@@ -3,7 +3,7 @@ import { Redirect } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
-import { isAuth, getCookie, signout } from "../auth/helper";
+import { isAuth, getCookie, signout, updateUser } from "../auth/helper";
 import styled from "styled-components";
 
 const Private = ({ history }) => {
@@ -51,25 +51,25 @@ const Private = ({ history }) => {
     };
     const handleSubmit = (e) => {
       e.preventDefault();
-      setValues({ ...values, buttonText: "Submitting..." });
       axios({
-        method: "POST",
-        url: `${process.env.REACT_APP_API}/signup`,
-        data: { name, email, password },
+        method: "PUT",
+        url: `${process.env.REACT_APP_API}/user/update`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        data: { name, password },
       })
         .then((response) => {
-          console.log("SIGNUP SUCCESS", response);
-          setValues({
-            ...values,
-            name: "",
-            email: "",
-            password: "",
+          console.log("PRIVATE PROFILE UPDATE SUCCESS", response);
+          updateUser(response, () => {
+            toast.success("Profile updated successfully");
           });
-          toast.success(response.data.message);
         })
         .catch((error) => {
-          console.log("SIGNUP ERROR", error.response.data);
-
+          console.log(
+            "PRIVATE PROFILE UPDATE ERROR",
+            error.response.data.error
+          );
           toast.error(error.response.data.error);
         });
     };
@@ -110,7 +110,7 @@ const Private = ({ history }) => {
           />
         </FormEl>
         <FormEl>
-          <Button onClick={handleSubmit}>회원가입</Button>
+          <Button onClick={handleSubmit}>업데이트</Button>
         </FormEl>
       </AuthBlock>
     );
