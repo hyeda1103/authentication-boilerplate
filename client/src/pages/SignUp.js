@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Redirect } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
@@ -75,6 +75,10 @@ const SignUp = () => {
         </FormEl>
         <FormEl>
           <Button onClick={handleSubmit}>회원가입</Button>
+          <br />
+          <ForgotPassword to="/auth/password/forgot">
+            비밀번호를 잊으셨나요?
+          </ForgotPassword>
         </FormEl>
       </AuthBlock>
     );
@@ -157,4 +161,10 @@ const Button = styled.button`
     background: #000;
     color: #fff;
   }
+`;
+
+const ForgotPassword = styled(Link)`
+  display: block;
+  text-align: right;
+  color: #000;
 `;

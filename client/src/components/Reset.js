@@ -1,91 +1,78 @@
-import React, { useState } from "react";
-import { Link, Redirect } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
-import { authenticate, isAuth } from "../auth/helper";
 import styled from "styled-components";
 
-const SignIn = ({ history }) => {
+const Reset = ({ match }) => {
   const [values, setValues] = useState({
-    email: "",
-    password: "",
+    name: "",
+    token: "",
+    newPassword: "",
   });
 
-  const { email, password } = values;
+  useEffect(() => {
+    let token = match.params.token;
+    let { name } = jwt.decode(token);
+    if (token) {
+      setValues({ ...values, name, token });
+    }
+  }, []);
 
-  const handleChange = (name) => (e) => {
-    setValues({ ...values, [name]: e.target.value });
+  const { name, token, newPassword } = values;
+
+  const handleChange = (e) => {
+    setValues({ ...values, newPassword: e.target.value });
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     axios({
-      method: "POST",
-      url: `${process.env.REACT_APP_API}/signin`,
-      data: { email, password },
+      method: "PUT",
+      url: `${process.env.REACT_APP_API}/reset-password`,
+      data: { newPassword, resetPasswordLink: token },
     })
       .then((response) => {
-        console.log("SIGNIN SUCCESS", response);
-        authenticate(response, () => {
-          setValues({
-            ...values,
-            name: "",
-            email: "",
-            password: "",
-          });
-          // toast.success(`Hey ${response.data.user.name}, Welcome Back`);
-          isAuth() && isAuth().role === "admin"
-            ? history.push("/admin")
-            : history.push("/private");
-        });
+        console.log("RESET PASSWORD SUCCESS", response);
+        toast.success(response.data.message);
       })
       .catch((error) => {
-        console.log("SIGNIN ERROR", error.response.data);
+        console.log("RESET PASSWORD ERROR", error.response.data);
         toast.error(error.response.data.error);
       });
   };
 
-  const signinForm = () => (
+  const passwordResetForm = () => (
     <AuthBlock>
-      <Title>로그인</Title>
+      <Title>비밀번호 재설정</Title>
+      <SubTitle>Hey {name}, Type your new Password</SubTitle>
       <FormEl>
-        <StyledLabel htmlFor="email">이메일</StyledLabel>
-        <StyledInput
-          id="email"
-          type="email"
-          value={email}
-          onChange={handleChange("email")}
-        />
-      </FormEl>
-      <FormEl>
-        <StyledLabel htmlFor="password">비밀번호</StyledLabel>
+        <StyledLabel htmlFor="password">새로운 비밀번호</StyledLabel>
         <StyledInput
           id="password"
           type="password"
-          value={password}
-          onChange={handleChange("password")}
+          value={newPassword}
+          placeholder="새로운 비밀번호를 입력하세요"
+          onChange={handleChange}
+          required
         />
       </FormEl>
+
       <FormEl>
-        <Button onClick={handleSubmit}>로그인</Button>
-        <br />
-        <ForgotPassword to="/auth/password/forgot">
-          비밀번호를 잊으셨나요?
-        </ForgotPassword>
+        <Button onClick={handleSubmit}>비밀번호 재설정</Button>
       </FormEl>
     </AuthBlock>
   );
-
   return (
     <Main>
       <ToastContainer />
-      {isAuth() ? <Redirect to="/" /> : null}
-      {signinForm()}
+      {passwordResetForm()}
     </Main>
   );
 };
 
-export default SignIn;
+export default Reset;
 
 const Main = styled.main`
   height: 100%;
@@ -106,6 +93,13 @@ const AuthBlock = styled.form`
 
 const Title = styled.h1`
   font-size: 30px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  letter-spacing: 4px;
+`;
+
+const SubTitle = styled.p`
+  font-size: 20px;
   margin-bottom: 1.5rem;
   text-align: center;
   letter-spacing: 4px;
@@ -154,10 +148,4 @@ const Button = styled.button`
     background: #000;
     color: #fff;
   }
-`;
-
-const ForgotPassword = styled(Link)`
-  display: block;
-  text-align: right;
-  color: #000;
 `;

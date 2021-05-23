@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
+import styled from "styled-components";
 
 const Activate = ({ match }) => {
   const [values, setValues] = useState({
@@ -45,10 +46,10 @@ const Activate = ({ match }) => {
   };
 
   const activationLink = () => (
-    <>
+    <Main>
       <h1>Hey {name} Ready to activate your account?</h1>
       <button onClick={handleSubmit}> Activate Account</button>
-    </>
+    </Main>
   );
   return (
     <>
@@ -59,3 +60,9 @@ const Activate = ({ match }) => {
 };
 
 export default Activate;
+
+const Main = styled.main`
+  height: 100%;
+  display: flex;
+  align-items: center;
+`;

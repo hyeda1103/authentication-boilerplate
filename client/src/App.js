@@ -10,6 +10,8 @@ import Private from "./pages/Private";
 import PrivateRoute from "./components/PrivateRoute";
 import Admin from "./pages/Admin";
 import AdminRoute from "./components/AdminRoute";
+import Forgot from "./components/Forgot";
+import Reset from "./components/Reset";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
         <Route path="/auth/activate/:token" component={Activate} />
         <PrivateRoute path="/private" component={Private} />
         <AdminRoute path="/admin" component={Admin} />
+        <Route path="/auth/password/forgot" component={Forgot} />
+        <Route path="/auth/password/reset/:token" component={Reset} />
       </Switch>
     </BrowserRouter>
   );

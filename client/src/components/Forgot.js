@@ -1,91 +1,59 @@
 import React, { useState } from "react";
-import { Link, Redirect } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
-import { authenticate, isAuth } from "../auth/helper";
 import styled from "styled-components";
 
-const SignIn = ({ history }) => {
-  const [values, setValues] = useState({
-    email: "",
-    password: "",
-  });
+const Forgot = ({ history }) => {
+  const [email, setEmail] = useState("");
 
-  const { email, password } = values;
-
-  const handleChange = (name) => (e) => {
-    setValues({ ...values, [name]: e.target.value });
+  const handleChange = (e) => {
+    setEmail(e.target.value);
   };
   const handleSubmit = (e) => {
     e.preventDefault();
     axios({
-      method: "POST",
-      url: `${process.env.REACT_APP_API}/signin`,
-      data: { email, password },
+      method: "PUT",
+      url: `${process.env.REACT_APP_API}/forgot-password`,
+      data: { email },
     })
       .then((response) => {
-        console.log("SIGNIN SUCCESS", response);
-        authenticate(response, () => {
-          setValues({
-            ...values,
-            name: "",
-            email: "",
-            password: "",
-          });
-          // toast.success(`Hey ${response.data.user.name}, Welcome Back`);
-          isAuth() && isAuth().role === "admin"
-            ? history.push("/admin")
-            : history.push("/private");
-        });
+        console.log("FORGOT PASSWORD SUCCESS", response);
+        toast.success(response.data.message);
       })
       .catch((error) => {
-        console.log("SIGNIN ERROR", error.response.data);
+        console.log("FORGOT PASSWORD ERROR", error.response.data);
         toast.error(error.response.data.error);
       });
   };
 
-  const signinForm = () => (
+  const passwordForgotForm = () => (
     <AuthBlock>
-      <Title>로그인</Title>
+      <Title>비밀번호를 잊으셨나요?</Title>
       <FormEl>
         <StyledLabel htmlFor="email">이메일</StyledLabel>
         <StyledInput
           id="email"
           type="email"
           value={email}
-          onChange={handleChange("email")}
+          onChange={handleChange}
         />
       </FormEl>
+
       <FormEl>
-        <StyledLabel htmlFor="password">비밀번호</StyledLabel>
-        <StyledInput
-          id="password"
-          type="password"
-          value={password}
-          onChange={handleChange("password")}
-        />
-      </FormEl>
-      <FormEl>
-        <Button onClick={handleSubmit}>로그인</Button>
-        <br />
-        <ForgotPassword to="/auth/password/forgot">
-          비밀번호를 잊으셨나요?
-        </ForgotPassword>
+        <Button onClick={handleSubmit}>비밀번호 재설정 링크 요청</Button>
       </FormEl>
     </AuthBlock>
   );
-
   return (
     <Main>
       <ToastContainer />
-      {isAuth() ? <Redirect to="/" /> : null}
-      {signinForm()}
+      {passwordForgotForm()}
     </Main>
   );
 };
 
-export default SignIn;
+export default Forgot;
 
 const Main = styled.main`
   height: 100%;
@@ -154,10 +122,4 @@ const Button = styled.button`
     background: #000;
     color: #fff;
   }
-`;
-
-const ForgotPassword = styled(Link)`
-  display: block;
-  text-align: right;
-  color: #000;
 `;
