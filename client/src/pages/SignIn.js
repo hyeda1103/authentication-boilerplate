@@ -18,6 +18,15 @@ const SignIn = ({ history }) => {
   const handleChange = (name) => (e) => {
     setValues({ ...values, [name]: e.target.value });
   };
+
+  const informParent = (response) => {
+    authenticate(response, () => {
+      isAuth() && isAuth().role === "admin"
+        ? history.push("/admin")
+        : history.push("/private");
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     axios({
@@ -76,7 +85,7 @@ const SignIn = ({ history }) => {
         </ForgotPassword>
       </FormEl>
       <FormEl>
-        <Google />
+        <Google informParent={informParent} />
       </FormEl>
     </AuthBlock>
   );
