@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { authenticate, isAuth } from "../auth/helper";
 import styled from "styled-components";
+import Google from "./../auth/Google";
 
 const SignIn = ({ history }) => {
   const [values, setValues] = useState({
@@ -48,6 +49,7 @@ const SignIn = ({ history }) => {
   const signinForm = () => (
     <AuthBlock>
       <Title>로그인</Title>
+
       <FormEl>
         <StyledLabel htmlFor="email">이메일</StyledLabel>
         <StyledInput
@@ -72,6 +74,9 @@ const SignIn = ({ history }) => {
         <ForgotPassword to="/auth/password/forgot">
           비밀번호를 잊으셨나요?
         </ForgotPassword>
+      </FormEl>
+      <FormEl>
+        <Google />
       </FormEl>
     </AuthBlock>
   );
