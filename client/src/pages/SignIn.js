@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.min.css";
 import { authenticate, isAuth } from "../auth/helper";
 import styled from "styled-components";
 import Google from "./../auth/Google";
+import Facebook from "./../auth/Facebook";
 
 const SignIn = ({ history }) => {
   const [values, setValues] = useState({
@@ -58,7 +59,6 @@ const SignIn = ({ history }) => {
   const signinForm = () => (
     <AuthBlock>
       <Title>로그인</Title>
-
       <FormEl>
         <StyledLabel htmlFor="email">이메일</StyledLabel>
         <StyledInput
@@ -86,6 +86,7 @@ const SignIn = ({ history }) => {
       </FormEl>
       <FormEl>
         <Google informParent={informParent} />
+        <Facebook informParent={informParent} />
       </FormEl>
     </AuthBlock>
   );

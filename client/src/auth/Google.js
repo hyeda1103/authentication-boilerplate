@@ -50,7 +50,7 @@ const GoogleButton = styled.button`
   color: #fff;
   border: 1px solid #ff3e30;
   padding: 0.5rem;
-  margin: 1.5rem 0;
+  margin: 0.5rem 0 0;
   font-size: 16px;
   box-sizing: border-box;
   cursor: pointer;
